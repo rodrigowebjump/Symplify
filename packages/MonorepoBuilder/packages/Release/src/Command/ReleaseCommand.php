@@ -85,9 +85,17 @@ final class ReleaseCommand extends Command
 
         $this->symfonyStyle->newLine();
 
+        dump($this->symfonyStyle->isVerbose());
+
         $isDryRun = (bool) $input->getOption(Option::DRY_RUN);
         foreach ($this->releaseWorkersByPriority as $releaseWorker) {
             $this->symfonyStyle->writeln(' * ' . $releaseWorker->getDescription());
+
+            // show priority on -v/--verbose/--debug
+            if ($this->symfonyStyle->isVerbose()) {
+                $this->symfonyStyle->note($releaseWorker->getPriority() . ' (priority) - ' .get_class($releaseWorker));
+                $this->symfonyStyle->newLine();
+            }
 
             if ($isDryRun === false) {
                 $releaseWorker->work($version);
